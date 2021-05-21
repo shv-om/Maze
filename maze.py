@@ -118,6 +118,3 @@ class Maze:
 
 maze = Maze(30)
 print(maze.maze_array)
-#print(maze.visited[-1])
-#print(maze.path, len(maze.path))
-
