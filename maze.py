@@ -56,7 +56,6 @@ class Maze:
 		if self.direction != []:
 			prev = self.opposite[self.direction[-1]]
 			temp.remove(prev)
-			#print(temp, prev)
 		
 		di = random.choice(temp)
 		
@@ -82,7 +81,6 @@ class Maze:
 	def create_path(self):
 		
 		self.current_cell = self.choose_random()
-		#print("current cell", self.current_cell)
 		
 		while True:
 			if self.current_cell not in self.visited:
@@ -95,7 +93,6 @@ class Maze:
 					self.direction = []
 					self.create_path()
 			else:
-				#self.current_cell = self.choose_random()
 				break
 	
 	
