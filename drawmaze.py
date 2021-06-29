@@ -17,6 +17,7 @@ Wilson's Algorithm
 
 """
 
+import turtle
 import random
 import numpy as np
 
