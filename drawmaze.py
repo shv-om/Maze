@@ -155,13 +155,17 @@ class Draw:
 		self.points = points
 		self.directions = dir_list
 
+
+		self.screen = turtle.Screen()
+		self.screen.setworldcoordinates(-1, -1, self.screen.window_width() - 1, self.screen.window_height() - 1)
+
 		self.cursor = turtle.Turtle()
 		turtle.bgcolor('black')
 		self.cursor.color('white')
 		#self.cursor.hideturtle()
-		self.cursor.pensize('6')
+		self.cursor.pensize('5')
 
-		self.d = {'l': 'left', 'r': 'right', 't': 'top', 'b': 'bottom'}
+		self.d = {'l': 'left', 't': 'top', 'r': 'right', 'b': 'bottom'}
 
 		self.angles = {
 					0.0 : [0.0, 90.0, 180.0, 270.0],
@@ -170,14 +174,17 @@ class Draw:
 					270.0 : [90.0, 180.0, 270.0, 0.0]
 				}
 
+
 	def __setting(self, d):
 		index = {'l': 0, 't': 1, 'r': 2, 'b': 3}
+		
+		#ang = {'l': 0.0, 't': 90.0, 'r': 180.0, 'b': 270}
+		#self.cursor.setheading(ang[d])
 
 		angle = self.cursor.heading()
 		
 		a = self.angles[angle][index[d]]
 		self.cursor.left(a)
-		#self.cursor.setheading(a)
 
 
 	def move_cursor(self):
@@ -187,19 +194,19 @@ class Draw:
 		for cell_list in self.points:
 			for cell in cell_list:
 				self.cursor.up()
-				self.cursor.goto((cell[0]*10, cell[1]*10))
+				self.cursor.goto((cell[0]*15, cell[1]*15))
 				self.__setting(self.directions[i])
 				self.cursor.down()
-				self.cursor.forward(20)
+				self.cursor.forward(15)
 				i += 1
 
 
 
-maze = Maze(15)
+maze = Maze(10)
 l, d = maze.maze()
 
-print(l, d, sep="\n")
-print(len(l), len(d))
+#print(l, d, sep="\n")
+#print(len(l), len(d))
 
 drw = Draw(l, d)
 drw.move_cursor()
