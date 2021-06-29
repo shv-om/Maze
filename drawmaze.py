@@ -30,7 +30,7 @@ class Maze:
 		self.visited = []					# to mark Visited Nodes
 		self.path_directions = []			# chosen direction list
 		self.path = []						# collection of all chosen nodes (moves) per iteration
-		self.direction = ['l', 'r', 't', 'b']
+		self.directn = ['l', 'r', 't', 'b']
 		self.opposites = {'l': 'r', 'r': 'l', 't': 'b', 'b': 't'}
 
 		# list containing all the cells to help in choosing random cells
@@ -62,35 +62,26 @@ class Maze:
 				self.cells.remove(cell)
 
 
-	def move(self, cell, direction):
+	def move(self, cell, directn):
 
 		if self.path_directions != []:
 			prev = self.opposites[self.path_directions[-1]]
-			direction.remove(prev)
-
-		#print(direction, cell)
+			directn.remove(prev)
 
 		if cell[0] == 0:
-			#print("here1",direction)
-			if 't' in direction:
-				direction.remove('t')
+			if 't' in directn:
+				directn.remove('t')
 		if cell[1] == 0:
-			#print("here2",direction)
-			if 'l' in direction:
-				direction.remove('l')
+			if 'l' in directn:
+				directn.remove('l')
 		if cell[0] == self.width-1:
-			#print("here3",direction)
-			if 'b' in direction:
-				direction.remove('b')
+			if 'b' in directn:
+				directn.remove('b')
 		if cell[1] == self.width-1:
-			#print("here4",direction)
-			if 'r' in direction:
-				direction.remove('r')
+			if 'r' in directn:
+				directn.remove('r')
 
-		di = random.choice(direction)
-		self.path_directions.append(di)
-
-		#print(direction, di, cell)
+		di = random.choice(directn)
 
 		if di == 'l':
 			cell = (cell[0], cell[1]-1)
@@ -101,51 +92,115 @@ class Maze:
 		elif di == 'b':
 			cell = (cell[0]+1, cell[1])
 
-		return cell
+		return (cell, di)
 
 
 	def create_path(self):
 
 		path = []
+		temp_dir = []
 
 		self.current_cell = self.choose_cell()
 		#print(self.current_cell)
 
 		while True:
 			if self.current_cell not in self.visited:
+				
 				if self.current_cell not in path:
-
+					directn = self.directn[:]
 					# update path before re-assigning value to current_cell
 					path.append(self.current_cell)
 
-					direction = self.direction[:]
-					self.current_cell = self.move(self.current_cell, direction)
-					#print("Here", self.current_cell)
-					#print(self.path)
+					self.current_cell, temp = self.move(self.current_cell, directn)
+					#path.append(self.current_cell)
+
+					temp_dir.append(temp)
 
 				else:
 					return 0
 			else:
+				self.path_directions.extend(temp_dir)
 				return path
 
 
 	def maze(self):
 
 		# starting cell
-		self.mark_visited([self.choose_cell()])
+		initial_cell = self.choose_cell()
+		self.mark_visited([initial_cell])
+		self.path.append([initial_cell])
 
 		while True:
 			if self.cells != []:
 				temp_path = self.create_path()
 				if temp_path != 0:
 					self.mark_visited(temp_path)
-					print(self.maze_array)
+					self.path.append(temp_path)
+
 					#break
 				else:
 					continue
 			else:
 				break
 
+		# Last element
+		self.path_directions.append('l')
 
-maze = Maze(6)
-maze.maze()
+		return (self.path, self.path_directions)
+
+
+class Draw:
+	
+	def __init__(self, points, dir_list):
+		self.points = points
+		self.directions = dir_list
+
+		self.cursor = turtle.Turtle()
+		turtle.bgcolor('black')
+		self.cursor.color('white')
+		#self.cursor.hideturtle()
+		self.cursor.pensize('6')
+
+		self.d = {'l': 'left', 'r': 'right', 't': 'top', 'b': 'bottom'}
+
+		self.angles = {
+					0.0 : [0.0, 90.0, 180.0, 270.0],
+					90.0 : [270.0, 0.0, 90.0, 180.0],
+					180.0 : [180.0, 270.0, 0.0, 90.0],
+					270.0 : [90.0, 180.0, 270.0, 0.0]
+				}
+
+	def __setting(self, d):
+		index = {'l': 0, 't': 1, 'r': 2, 'b': 3}
+
+		angle = self.cursor.heading()
+		
+		a = self.angles[angle][index[d]]
+		self.cursor.left(a)
+		#self.cursor.setheading(a)
+
+
+	def move_cursor(self):
+		i = 0
+		#self.cursor.setheading(180)
+
+		for cell_list in self.points:
+			for cell in cell_list:
+				self.cursor.up()
+				self.cursor.goto((cell[0]*10, cell[1]*10))
+				self.__setting(self.directions[i])
+				self.cursor.down()
+				self.cursor.forward(20)
+				i += 1
+
+
+
+maze = Maze(15)
+l, d = maze.maze()
+
+print(l, d, sep="\n")
+print(len(l), len(d))
+
+drw = Draw(l, d)
+drw.move_cursor()
+input()
