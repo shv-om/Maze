@@ -15,3 +15,10 @@ Wilson's Algorithm:
         Add all cells that are passed into the visited list
 7.  If all cells have not been visited
         Go to 2
+
+
+# Example Maze created by drawmaze.py
+
+size = 50 x 50
+
+![Maze Image](Maze.png)
