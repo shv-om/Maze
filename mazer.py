@@ -160,7 +160,7 @@ class Draw:
 		self.cursor.color('white')
 		self.cursor.hideturtle()
 		self.cursor.pensize(tunnel)
-		#self.cursor.speed(1)
+		self.cursor.speed(0)
 
 
 

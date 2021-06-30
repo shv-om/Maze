@@ -17,8 +17,20 @@ Wilson's Algorithm:
         Go to 2
 
 
+
+# Example Maze created by mazer.py
+
+This is a perfect not biased Maze creator.
+
+Mazesize = 30, tunnelsize = 15, scale = 20
+
+![Perfect Maze Image](perfectmaze.png)
+
+
 # Example Maze created by drawmaze.py
 
-size = 50 x 50
+Try something new with this code by commenting and uncommenting parts
+
+Mazesize = 50, tunnelsize = 10, scale = 15
 
 ![Maze Image](Maze.png)
