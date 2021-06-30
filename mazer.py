@@ -17,6 +17,7 @@ Wilson's Algorithm
 
 """
 
+import turtle
 import random
 import numpy as np
 
@@ -29,7 +30,7 @@ class Maze:
 		self.visited = []					# to mark Visited Nodes
 		self.path_directions = []			# chosen direction list
 		self.path = []						# collection of all chosen nodes (moves) per iteration
-		self.direction = ['l', 'r', 't', 'b']
+		self.directn = ['l', 'r', 't', 'b']
 		self.opposites = {'l': 'r', 'r': 'l', 't': 'b', 'b': 't'}
 
 		# list containing all the cells to help in choosing random cells
@@ -50,46 +51,39 @@ class Maze:
 
 
 	def mark_visited(self, temp_cells):
+		i = 1
 		for cell in temp_cells:
 			# update the visited list
 			self.visited.append(cell)
 			#print(cell)
-			self.update_cell(cell)
+			self.update_cell(cell, i)
+			i += 1
 
 			if cell in self.cells:
 				#remove visited cell from the overall cells list
 				self.cells.remove(cell)
 
 
-	def move(self, cell, direction):
+	def move(self, cell, directn):
 
 		if self.path_directions != []:
 			prev = self.opposites[self.path_directions[-1]]
-			direction.remove(prev)
-
-		#print(direction, cell)
+			directn.remove(prev)
 
 		if cell[0] == 0:
-			#print("here1",direction)
-			if 't' in direction:
-				direction.remove('t')
+			if 't' in directn:
+				directn.remove('t')
 		if cell[1] == 0:
-			#print("here2",direction)
-			if 'l' in direction:
-				direction.remove('l')
+			if 'l' in directn:
+				directn.remove('l')
 		if cell[0] == self.width-1:
-			#print("here3",direction)
-			if 'b' in direction:
-				direction.remove('b')
+			if 'b' in directn:
+				directn.remove('b')
 		if cell[1] == self.width-1:
-			#print("here4",direction)
-			if 'r' in direction:
-				direction.remove('r')
+			if 'r' in directn:
+				directn.remove('r')
 
-		di = random.choice(direction)
-		self.path_directions.append(di)
-
-		#print(direction, di, cell)
+		di = random.choice(directn)
 
 		if di == 'l':
 			cell = (cell[0], cell[1]-1)
@@ -112,15 +106,14 @@ class Maze:
 
 		while True:
 			if self.current_cell not in self.visited:
+				
 				if self.current_cell not in path:
-
+					directn = self.directn[:]
 					# update path before re-assigning value to current_cell
 					path.append(self.current_cell)
 
-					direction = self.direction[:]
-					self.current_cell = self.move(self.current_cell, direction)
-					#print("Here", self.current_cell)
-					#print(self.path)
+					self.current_cell = self.move(self.current_cell, directn)
+					path.append(self.current_cell)
 
 				else:
 					return 0
@@ -131,7 +124,9 @@ class Maze:
 	def maze(self):
 
 		# starting cell
-		self.mark_visited([self.choose_cell()])
+		initial_cell = self.choose_cell()
+		self.mark_visited([initial_cell])
+		self.path.append([initial_cell])
 
 		while True:
 			if self.cells != []:
@@ -139,7 +134,7 @@ class Maze:
 				if temp_path != 0:
 					self.mark_visited(temp_path)
 					self.path.append(temp_path)
-					print(self.path)
+
 					#break
 				else:
 					continue
@@ -147,5 +142,50 @@ class Maze:
 				break
 
 
-maze = Maze(4)
-maze.maze()
+		return self.path
+
+
+class Draw:
+	
+	def __init__(self, points, tunnel='15', scale=20):
+		self.points = points
+
+		self.scale = scale
+
+		self.screen = turtle.Screen()
+		self.screen.setworldcoordinates(-1, -1, self.screen.window_width() - 1, self.screen.window_height() - 1)
+
+		self.cursor = turtle.Turtle()
+		turtle.bgcolor('black')
+		self.cursor.color('white')
+		self.cursor.hideturtle()
+		self.cursor.pensize(tunnel)
+		#self.cursor.speed(1)
+
+
+
+	def move_cursor(self):
+
+		for cell_list in self.points:
+			
+			self.cursor.up()
+			cell1 = cell_list[0]
+			self.cursor.goto((cell1[0]*scale, cell1[1]*scale))
+
+			for cell in cell_list:
+				self.cursor.down()
+				self.cursor.goto((cell[0]*scale, cell[1]*scale))
+
+
+
+size = int(input("Enter Maze Size: "))
+print("\n***--- Note: For good result tunnel size must be smaller than scale size ---***\n")
+tunnel = input("Enter the size (tunnel size): ")
+scale = int(input("Enter Scale (distance between tunnel): "))
+
+maze = Maze(size)
+l = maze.maze()
+
+drw = Draw(l, tunnel, scale)
+drw.move_cursor()
+input()

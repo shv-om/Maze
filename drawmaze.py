@@ -51,11 +51,13 @@ class Maze:
 
 
 	def mark_visited(self, temp_cells):
+		i = 1
 		for cell in temp_cells:
 			# update the visited list
 			self.visited.append(cell)
 			#print(cell)
-			self.update_cell(cell)
+			self.update_cell(cell, i)
+			i += 1
 
 			if cell in self.cells:
 				#remove visited cell from the overall cells list
@@ -112,7 +114,7 @@ class Maze:
 					path.append(self.current_cell)
 
 					self.current_cell, temp = self.move(self.current_cell, directn)
-					#path.append(self.current_cell)
+					path.append(self.current_cell)
 
 					temp_dir.append(temp)
 
@@ -145,6 +147,7 @@ class Maze:
 
 		# Last element
 		self.path_directions.append('l')
+		print(self.maze_array)
 
 		return (self.path, self.path_directions)
 
@@ -155,17 +158,17 @@ class Draw:
 		self.points = points
 		self.directions = dir_list
 
-
-		self.screen = turtle.Screen()
-		self.screen.setworldcoordinates(-1, -1, self.screen.window_width() - 1, self.screen.window_height() - 1)
+		#self.screen = turtle.Screen()
+		#self.screen.setworldcoordinates(-1, -1, self.screen.window_width() - 1, self.screen.window_height() - 1)
 
 		self.cursor = turtle.Turtle()
 		turtle.bgcolor('black')
 		self.cursor.color('white')
 		#self.cursor.hideturtle()
-		self.cursor.pensize('5')
+		self.cursor.pensize('8')
+		#self.cursor.speed(1)
 
-		self.d = {'l': 'left', 't': 'top', 'r': 'right', 'b': 'bottom'}
+		self.d = {'l': 'b', 't': 'l', 'r': 't', 'b': 'r'}
 
 		self.angles = {
 					0.0 : [0.0, 90.0, 180.0, 270.0],
@@ -177,13 +180,16 @@ class Draw:
 
 	def __setting(self, d):
 		index = {'l': 0, 't': 1, 'r': 2, 'b': 3}
+
+		modified_d = self.d[d]
 		
-		#ang = {'l': 0.0, 't': 90.0, 'r': 180.0, 'b': 270}
-		#self.cursor.setheading(ang[d])
+		# ang = {'l': 0.0, 't': 90.0, 'r': 180.0, 'b': 270}
+		# self.cursor.setheading(ang[d])
 
 		angle = self.cursor.heading()
 		
-		a = self.angles[angle][index[d]]
+		a = self.angles[angle][index[modified_d]]
+		print(d, angle, a)
 		self.cursor.left(a)
 
 
@@ -192,21 +198,33 @@ class Draw:
 		#self.cursor.setheading(180)
 
 		for cell_list in self.points:
+			
+			self.cursor.up()
+			cell1 = cell_list[0]
+			self.cursor.goto((cell1[0]*10, cell1[1]*10))
+
 			for cell in cell_list:
-				self.cursor.up()
-				self.cursor.goto((cell[0]*15, cell[1]*15))
-				self.__setting(self.directions[i])
 				self.cursor.down()
-				self.cursor.forward(15)
-				i += 1
+				self.cursor.goto((cell[0]*(10), cell[1]*(10)))
+				
+				#self.__setting(self.directions[i])
+				#self.cursor.down()
+				#self.cursor.dot()
+				#self.cursor.write(cell)
+				#self.cursor.forward(20)
+				#i += 1
 
 
 
-maze = Maze(10)
+maze = Maze(30)
 l, d = maze.maze()
 
-#print(l, d, sep="\n")
-#print(len(l), len(d))
+# print(l, d, sep="\n")
+# print(len(l), len(d))
+
+# l = [[(3, 0)], [(3, 3), (2, 3), (1, 3), (1, 2), (1, 1), (1, 0), (2, 0), (2, 1)], [(0, 1), (0, 0)], [(0, 2)], [(3, 2)], [(2, 2)], [(0, 3)]]
+
+# d = []
 
 drw = Draw(l, d)
 drw.move_cursor()
