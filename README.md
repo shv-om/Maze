@@ -1,8 +1,6 @@
 # Maze
 Creating Maze using Wilson's Algorithm
 
-Still Working...
-
 Wilson's Algorithm:
 1.  Choose a random cell and add it to the visited list
 2.  Choose another random cell (Don’t add to visited list). This is the current cell
