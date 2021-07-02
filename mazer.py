@@ -1,19 +1,7 @@
 """
-Wilson's Algorithm
 
-1.  Choose a random cell and add it to the visited list
-2.  Choose another random cell (Don’t add to visited list). This is the current cell
-3.  Choose a random cell that is adjacent to the current cell (Don’t add to visited list). This is your new current cell.
-4.  Save the direction that you traveled on the previous cell
-5.  If the current cell is not in the visited cells list
-        Go to 3
-
-6.  Else
-        Starting at the cell selected in step 2, follow the arrows and remove the edges that are crossed.
-        Add all cells that are passed into the visited list
-
-7.  If all cells have not been visited
-        Go to 2
+Created by-
+Shivom (Ulegend)
 
 """
 
@@ -147,8 +135,9 @@ class Maze:
 
 class Draw:
 	
-	def __init__(self, points, tunnel='15', scale=20):
+	def __init__(self, points, size, tunnel='15', scale=20):
 		self.points = points
+		self.size = size
 
 		self.scale = scale
 
@@ -162,8 +151,7 @@ class Draw:
 		self.cursor.pensize(tunnel)
 		self.cursor.speed(0)
 
-
-
+	
 	def move_cursor(self):
 
 		for cell_list in self.points:
@@ -175,17 +163,41 @@ class Draw:
 			for cell in cell_list:
 				self.cursor.down()
 				self.cursor.goto((cell[0]*scale, cell[1]*scale))
+				# self.cursor.write(cell)
+
+
+	def startend(self):
+		pensize = str(int(tunnel)-2)
+
+		self.cursor.pensize(pensize)
+
+		self.cursor.color('blue')
+		# Mark Start point
+		self.cursor.up()
+		self.cursor.goto(0, (self.size-1)*scale)
+		self.cursor.down()
+		self.cursor.goto((-scale, (self.size-1)*scale))
+
+		# Mark Finish point
+		self.cursor.color('green')
+		self.cursor.up()
+		self.cursor.goto(((self.size-1)*scale, 0))
+		self.cursor.down()
+		self.cursor.goto(((self.size)*scale, 0))
 
 
 
-size = int(input("Enter Maze Size: "))
-print("\n***--- Note: For good result tunnel size must be smaller than scale size ---***\n")
-tunnel = input("Enter the size (tunnel size): ")
-scale = int(input("Enter Scale (distance between tunnel): "))
+if __name__ == '__main__':
+	
+	size = int(input("Enter Maze Size: "))
+	print("\n***--- Note: For good result tunnel size must be smaller than scale size ---***\n")
+	tunnel = input("Enter the size (tunnel size): ")
+	scale = int(input("Enter Scale (distance between tunnel): "))
 
-maze = Maze(size)
-l = maze.maze()
+	maze = Maze(size)
+	l = maze.maze()
 
-drw = Draw(l, tunnel, scale)
-drw.move_cursor()
-input()
+	drw = Draw(l, size, tunnel, scale)
+	drw.move_cursor()
+	drw.startend()
+	input()
